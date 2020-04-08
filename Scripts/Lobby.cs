@@ -33,22 +33,27 @@ public class Lobby : Node
 
     public void OnLobbyCreated(Steamworks.Result Result, Steamworks.Data.Lobby Lobby)
     {
+        CurrentLobby = Lobby;
         Lobby.SetPublic();
-        LobbyLabel.Set("text", "Lobby ID: " + Lobby.Id.ToString());
+        SetLobbyDetails();
         StatusLabel.Set("text", "Status: Hosting, Waiting For Players");
-        AddToPlayerList(Steamworks.SteamClient.Name);
     }
 
     public void OnLobbyEntered(Steamworks.Data.Lobby Lobby)
     {
         CurrentLobby = Lobby;
+        SetLobbyDetails();
     }
 
     public void OnLobbyMemberJoined(Steamworks.Data.Lobby Lobby, Steamworks.Friend Friend)
     {
-       AddToPlayerList(Friend.Name);
+       SetLobbyDetails();
     }
 
+    public void OnGameLobbyJoinRequested(Steamworks.Data.Lobby Lobby, Steamworks.SteamId SteamID)
+    {
+        Steamworks.SteamMatchmaking.JoinLobbyAsync(Lobby.Id);
+    }
     public void OnLobbyMemberLeave(Steamworks.Data.Lobby Lobby, Steamworks.Friend Friend)
     {
         GD.Print(Friend.Name);
@@ -56,16 +61,20 @@ public class Lobby : Node
         PlayerToRemove.QueueFree();
     }
 
-    public void OnGameLobbyJoinRequested(Steamworks.Data.Lobby Lobby, Steamworks.SteamId SteamID)
+    public void SetLobbyDetails()
     {
-        Steamworks.SteamMatchmaking.JoinLobbyAsync(Lobby.Id);
-    }
+        LobbyLabel.Set("text", "Lobby ID: " + CurrentLobby.Id.ToString());
+        foreach (var member in CurrentLobby.Members) 
+        {
+            AddToPlayerList(member.Name);
+        }
 
-    public void AddToPlayerList(String Friend) 
+    } 
+    public void AddToPlayerList(String FriendName) 
     {
         var NewPlayer = new Label();
-        NewPlayer.Name = Friend;
-        NewPlayer.Set("text",Friend);
+        NewPlayer.Name = FriendName;
+        NewPlayer.Set("text",FriendName);
         PlayerList.AddChild(NewPlayer,false);
     }
 
