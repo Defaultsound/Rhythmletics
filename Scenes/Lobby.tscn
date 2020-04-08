@@ -1,0 +1,100 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Scripts/Lobby.cs" type="Script" id=1]
+[ext_resource path="res://fonts/ArialFont.tres" type="DynamicFont" id=2]
+
+[node name="GUI" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -1.0
+margin_right = -1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Host" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HostBtn" type="Button" parent="Host"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -82.0
+margin_top = -31.5
+margin_right = 82.0
+margin_bottom = 31.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HostLabel" type="Label" parent="Host/HostBtn"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/font = ExtResource( 2 )
+text = "Host"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="StatusLabel" type="Label" parent="."]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -81.0
+custom_fonts/font = ExtResource( 2 )
+text = "Status: Idle...
+"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LobbyLabel" type="Label" parent="."]
+margin_right = 172.0
+margin_bottom = 42.0
+size_flags_horizontal = 2
+custom_fonts/font = ExtResource( 2 )
+text = "Lobby ID: "
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PlayerListLabel" type="Label" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -236.0
+margin_right = -64.0
+margin_bottom = 42.0
+size_flags_horizontal = 2
+custom_fonts/font = ExtResource( 2 )
+text = "Player List:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PlayerListScrollContainer" type="ScrollContainer" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -235.0
+margin_top = 45.0
+margin_bottom = 225.0
+scroll_horizontal_enabled = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PlayerList" type="VBoxContainer" parent="PlayerListScrollContainer"]
+size_flags_horizontal = 0
+size_flags_vertical = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="Host/HostBtn" to="Host" method="_on_HostBtn_pressed"]
