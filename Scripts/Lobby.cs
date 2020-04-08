@@ -9,6 +9,7 @@ public class Lobby : Node
     Label LobbyLabel;
     VBoxContainer PlayerList;
     Steamworks.Data.Lobby CurrentLobby;
+
     public override void _Ready()
     {
         
@@ -36,29 +37,32 @@ public class Lobby : Node
         }
         else 
         {
-            CurrentLobby.Leave();
-            LobbyLabel.Set("text", "Lobby ID: ");
-            StatusLabel.Set("text", "Status: Idle...");
-            foreach (Node Child in PlayerList.GetChildren()) 
-            {
-                Child.QueueFree();
-            }
+            LeaveLobby();
             HostButton.GetNode("HostLabel").Set("text","Host");
         }
     }
 
+    //Main Delegate Implementations
     public void OnLobbyCreated(Steamworks.Result Result, Steamworks.Data.Lobby Lobby)
     {
-        CurrentLobby = Lobby;
         Lobby.SetPublic();
-        StatusLabel.Set("text", "Status: Hosting, Waiting For Players");
-        HostButton.GetNode("HostLabel").Set("text","Cancel");
     }
 
     public void OnLobbyEntered(Steamworks.Data.Lobby Lobby)
     {
         CurrentLobby = Lobby;
         SetLobbyDetails();
+        if (Lobby.IsOwnedBy(Steamworks.SteamClient.SteamId)) 
+        {
+            StatusLabel.Set("text", "Status: Hosting, Waiting For Players");
+            HostButton.GetNode("HostLabel").Set("text","Cancel");
+        }
+        else 
+        {
+            StatusLabel.Set("text", "Status: Waiting in Lobby");
+            HostButton.GetNode("HostLabel").Set("text","Leave");
+        }
+
     }
 
     public void OnLobbyMemberJoined(Steamworks.Data.Lobby Lobby, Steamworks.Friend Friend)
@@ -70,17 +74,17 @@ public class Lobby : Node
     {
         Steamworks.SteamMatchmaking.JoinLobbyAsync(Lobby.Id);
     }
-    public void OnLobbyMemberDisconnected(Steamworks.Data.Lobby Lobby, Steamworks.Friend Friend)
-    {
-        RemovePlayerFromList(Friend);
-    }
 
     public void OnLobbyMemberLeave(Steamworks.Data.Lobby Lobby, Steamworks.Friend Friend)
     {
         RemovePlayerFromList(Friend);
     }
+    public void OnLobbyMemberDisconnected(Steamworks.Data.Lobby Lobby, Steamworks.Friend Friend)
+    {
+        RemovePlayerFromList(Friend);
+    }
 
-
+    //Functions for Handling UI Updates
     public void SetLobbyDetails()
     {
         LobbyLabel.Set("text", "Lobby ID: " + CurrentLobby.Id.ToString());
@@ -107,7 +111,17 @@ public class Lobby : Node
     {
         var PlayerToRemove = PlayerList.GetNode(Friend.Name);
         PlayerToRemove.QueueFree();
+    }
 
+    public void LeaveLobby()
+    {
+        CurrentLobby.Leave();
+        LobbyLabel.Set("text", "Lobby ID: ");
+        StatusLabel.Set("text", "Status: Idle...");
+        foreach (Node Child in PlayerList.GetChildren()) 
+        {
+            Child.QueueFree();
+        }
     }
 
     public override void _Notification(int what) 
