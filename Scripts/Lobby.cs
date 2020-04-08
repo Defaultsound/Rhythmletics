@@ -21,22 +21,38 @@ public class Lobby : Node
         Steamworks.SteamMatchmaking.OnLobbyCreated += OnLobbyCreated;
         Steamworks.SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
         Steamworks.SteamMatchmaking.OnLobbyMemberJoined += OnLobbyMemberJoined;
-        Steamworks.SteamMatchmaking.OnLobbyMemberDisconnected += OnLobbyMemberLeave;
+        Steamworks.SteamMatchmaking.OnLobbyMemberLeave += OnLobbyMemberLeave;
+        Steamworks.SteamMatchmaking.OnLobbyMemberDisconnected += OnLobbyMemberDisconnected;
         Steamworks.SteamFriends.OnGameLobbyJoinRequested += OnGameLobbyJoinRequested;
 
     }
 
     private void _on_HostBtn_pressed()
     {
-        var lobby = Steamworks.SteamMatchmaking.CreateLobbyAsync(4);
+        var HostLabelText = HostButton.GetNode("HostLabel").Get("text") as String;
+        if (HostLabelText == "Host") 
+        {
+            var lobby = Steamworks.SteamMatchmaking.CreateLobbyAsync(4);
+        }
+        else 
+        {
+            CurrentLobby.Leave();
+            LobbyLabel.Set("text", "Lobby ID: ");
+            StatusLabel.Set("text", "Status: Idle...");
+            foreach (Node Child in PlayerList.GetChildren()) 
+            {
+                Child.QueueFree();
+            }
+            HostButton.GetNode("HostLabel").Set("text","Host");
+        }
     }
 
     public void OnLobbyCreated(Steamworks.Result Result, Steamworks.Data.Lobby Lobby)
     {
         CurrentLobby = Lobby;
         Lobby.SetPublic();
-        SetLobbyDetails();
         StatusLabel.Set("text", "Status: Hosting, Waiting For Players");
+        HostButton.GetNode("HostLabel").Set("text","Cancel");
     }
 
     public void OnLobbyEntered(Steamworks.Data.Lobby Lobby)
@@ -54,12 +70,16 @@ public class Lobby : Node
     {
         Steamworks.SteamMatchmaking.JoinLobbyAsync(Lobby.Id);
     }
+    public void OnLobbyMemberDisconnected(Steamworks.Data.Lobby Lobby, Steamworks.Friend Friend)
+    {
+        RemovePlayerFromList(Friend);
+    }
+
     public void OnLobbyMemberLeave(Steamworks.Data.Lobby Lobby, Steamworks.Friend Friend)
     {
-        GD.Print(Friend.Name);
-        var PlayerToRemove = PlayerList.GetNode("GUI/PlayerListScrollContainer/PlayerList/" + Friend.Name);
-        PlayerToRemove.QueueFree();
+        RemovePlayerFromList(Friend);
     }
+
 
     public void SetLobbyDetails()
     {
@@ -70,12 +90,24 @@ public class Lobby : Node
         }
 
     } 
+
     public void AddToPlayerList(String FriendName) 
     {
-        var NewPlayer = new Label();
-        NewPlayer.Name = FriendName;
-        NewPlayer.Set("text",FriendName);
-        PlayerList.AddChild(NewPlayer,false);
+        if (!PlayerList.HasNode(FriendName))
+        {
+            var NewPlayer = new Label();
+            NewPlayer.Name = FriendName;
+            NewPlayer.Set("text",FriendName);
+            PlayerList.AddChild(NewPlayer,false);
+        }
+
+    }
+
+    public void RemovePlayerFromList(Steamworks.Friend Friend) 
+    {
+        var PlayerToRemove = PlayerList.GetNode(Friend.Name);
+        PlayerToRemove.QueueFree();
+
     }
 
     public override void _Notification(int what) 
