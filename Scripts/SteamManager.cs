@@ -7,6 +7,7 @@ public class SteamManager : Node
 
 	public override void _Ready()
 	{
+		var RhythmleticsGlobal = GetNode("/root/RhythmleticsGlobal") as Global;
 		try
 		{
 
@@ -20,7 +21,7 @@ public class SteamManager : Node
 
 			if (Steamworks.SteamClient.IsValid)
 			{
-				GD.Print(Steamworks.SteamClient.Name);
+				RhythmleticsGlobal.ClientSteamId = Steamworks.SteamClient.SteamId;
 			}
 			else
 			{

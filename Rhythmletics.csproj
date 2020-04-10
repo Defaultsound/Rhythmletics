@@ -64,7 +64,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\GameMode.cs" />
     <Compile Include="Scripts\Global.cs" />
-    <Compile Include="Scripts\Lobby.cs" />
+    <Compile Include="Scripts\LobbyGUI.cs" />
+    <Compile Include="Scripts\SteamLobby.cs" />
     <Compile Include="Scripts\PlayerMovement.cs" />
     <Compile Include="Scripts\SteamManager.cs" />
     <Compile Include="Scripts\Schemas\schema.cs" />
