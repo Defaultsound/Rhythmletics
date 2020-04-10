@@ -1,0 +1,13 @@
+namespace NetworkPacket;
+
+struct Vec2 
+{
+    x:float;
+    y:float;
+}
+
+table OtherPlayer 
+{
+    action:int;
+    pos:Vec2;
+}

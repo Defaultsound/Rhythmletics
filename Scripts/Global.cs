@@ -1,15 +1,16 @@
 using Godot;
 using System;
+using Steamworks;
 
 public class Global : Node
 {
-    public bool PlayingAsHost;
-    public Steamworks.SteamId GlobalLobbyID;
-    public Steamworks.SteamId PlayerOne;
-    public Steamworks.SteamId PlayerTwo;
+    public Steamworks.Data.Lobby CurrentLobby;
     public override void _Ready()
     {
-
+        
     }
-
+    public override void _Process(float delta) 
+    {
+        GD.Print(CurrentLobby.Id);
+    }
 }

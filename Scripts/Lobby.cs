@@ -3,17 +3,19 @@ using System;
 
 public class Lobby : Node
 {
-
+    Global RhythmleticsGlobal;
     Button HostButton;
+    Button ContinueButton;
     Label StatusLabel;
     Label LobbyLabel;
     VBoxContainer PlayerList;
-    Steamworks.Data.Lobby CurrentLobby;
 
     public override void _Ready()
     {
         
+        RhythmleticsGlobal = GetNode("/root/RhythmleticsGlobal") as Global;
         HostButton = GetParent().GetNode("Host/HostBtn") as Button;
+        ContinueButton = GetParent().GetNode("Host/ContinueBtn") as Button;
         StatusLabel = GetParent().GetNode("StatusLabel") as Label;
         LobbyLabel = GetParent().GetNode("LobbyLabel") as Label;
         PlayerList = GetParent().GetNode("PlayerListScrollContainer/PlayerList") as VBoxContainer;
@@ -34,12 +36,19 @@ public class Lobby : Node
         if (HostLabelText == "Host") 
         {
             var lobby = Steamworks.SteamMatchmaking.CreateLobbyAsync(4);
+            ContinueButton.Visible = true;
         }
         else 
         {
             LeaveLobby();
             HostButton.GetNode("HostLabel").Set("text","Host");
+            ContinueButton.Visible = false;
         }
+    }
+
+    public void _on_ContinueBtn_pressed()
+    {
+        GetTree().ChangeScene("Scenes/World.tscn");
     }
 
     //Main Delegate Implementations
@@ -50,7 +59,7 @@ public class Lobby : Node
 
     public void OnLobbyEntered(Steamworks.Data.Lobby Lobby)
     {
-        CurrentLobby = Lobby;
+        RhythmleticsGlobal.CurrentLobby = Lobby;
         SetLobbyDetails();
         if (Lobby.IsOwnedBy(Steamworks.SteamClient.SteamId)) 
         {
@@ -78,6 +87,7 @@ public class Lobby : Node
     public void OnLobbyMemberLeave(Steamworks.Data.Lobby Lobby, Steamworks.Friend Friend)
     {
         RemovePlayerFromList(Friend);
+        GD.Print("Left");
     }
     public void OnLobbyMemberDisconnected(Steamworks.Data.Lobby Lobby, Steamworks.Friend Friend)
     {
@@ -87,8 +97,8 @@ public class Lobby : Node
     //Functions for Handling UI Updates
     public void SetLobbyDetails()
     {
-        LobbyLabel.Set("text", "Lobby ID: " + CurrentLobby.Id.ToString());
-        foreach (var member in CurrentLobby.Members) 
+        LobbyLabel.Set("text", "Lobby ID: " +  RhythmleticsGlobal.CurrentLobby.Id.ToString());
+        foreach (var member in  RhythmleticsGlobal.CurrentLobby.Members) 
         {
             AddToPlayerList(member.Name);
         }
@@ -115,7 +125,8 @@ public class Lobby : Node
 
     public void LeaveLobby()
     {
-        CurrentLobby.Leave();
+        RhythmleticsGlobal.CurrentLobby.Leave();
+        RhythmleticsGlobal.CurrentLobby = default;
         LobbyLabel.Set("text", "Lobby ID: ");
         StatusLabel.Set("text", "Status: Idle...");
         foreach (Node Child in PlayerList.GetChildren()) 
@@ -128,7 +139,8 @@ public class Lobby : Node
     {
         if (what == MainLoop.NotificationWmQuitRequest) 
         {
-            CurrentLobby.Leave();
+             RhythmleticsGlobal.CurrentLobby.Leave();
+             RhythmleticsGlobal.CurrentLobby = default;
         }
     }
 }
