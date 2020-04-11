@@ -18,6 +18,7 @@ public class GameMode : SteamLobby
     public override void OnLobbyMemberJoined(Steamworks.Data.Lobby Lobby, Friend Friend) 
     {
         AddNewPlayer(Friend);
+        RhythmleticsGlobal.CurrentLobby.SendChatString("EV_BEGIN");
     }
 
     public void AddNewPlayer(Friend Friend)

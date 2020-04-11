@@ -15,6 +15,12 @@ public class PlayerMovement : KinematicBody
     public override void _Ready()
     {
         RhythmleticsGlobal = GetNode("/root/RhythmleticsGlobal") as Global;
+        var PlayerCamera = GetNode("Camera") as Camera;
+
+        if (ControllerId == RhythmleticsGlobal.ClientSteamId.ToString()) 
+        {
+            PlayerCamera.MakeCurrent();
+        }
     }
 
     public override void _Process(float delta)
