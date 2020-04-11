@@ -37,7 +37,7 @@ public class LobbyGUI : SteamLobby
 
     public void _on_ContinueBtn_pressed()
     {
-        GetTree().ChangeScene("Scenes/World.tscn");
+        TravelToWorld()
     }
 
     //Main Delegate Implementations
@@ -74,6 +74,17 @@ public class LobbyGUI : SteamLobby
         RemovePlayerFromList(Friend);
     }
 
+    public override void OnChatMessage(Steamworks.Data.Lobby Lobby, Steamworks.Friend Friend, string Message)
+    {
+        if(Message.BeginsWith("EV_")) 
+        {
+            if (Message.Equals("EV_BEGIN")) 
+            {
+                GetTree().ChangeScene("Scenes/World.tscn");
+            }
+        }
+    }
+
     //Functions for Handling UI Updates
     public void SetLobbyDetails()
     {
@@ -105,10 +116,7 @@ public class LobbyGUI : SteamLobby
 
     public void TravelToWorld() 
     {
-        foreach (var member in  RhythmleticsGlobal.CurrentLobby.Members) 
-        {
-            GetTree().ChangeScene("Scenes/World.tscn");
-        }
+        RhythmleticsGlobal.CurrentLobby.SendChatString("EV_BEGIN");
     }
 
     public void LeaveLobby()

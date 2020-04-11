@@ -15,6 +15,7 @@ public class SteamLobby : Node
         Steamworks.SteamMatchmaking.OnLobbyMemberLeave += OnLobbyMemberLeave;
         Steamworks.SteamMatchmaking.OnLobbyMemberDisconnected += OnLobbyMemberDisconnected;
         Steamworks.SteamFriends.OnGameLobbyJoinRequested += OnGameLobbyJoinRequested;
+        Steamworks.SteamMatchmaking.OnChatMessage += OnChatMessage;
     }
 
     public override void _Ready() 
@@ -59,6 +60,11 @@ public class SteamLobby : Node
 
     }
     public virtual void OnLobbyMemberDisconnected(Steamworks.Data.Lobby Lobby, Steamworks.Friend Friend)
+    {
+
+    }
+
+    public virtual void OnChatMessage(Steamworks.Data.Lobby Lobby, Steamworks.Friend Friend, String Message)
     {
 
     }
