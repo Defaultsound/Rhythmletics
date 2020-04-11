@@ -37,7 +37,7 @@ public class LobbyGUI : SteamLobby
 
     public void _on_ContinueBtn_pressed()
     {
-        TravelToWorld()
+        TravelToWorld();
     }
 
     //Main Delegate Implementations
