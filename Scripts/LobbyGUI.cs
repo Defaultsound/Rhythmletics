@@ -51,6 +51,7 @@ public class LobbyGUI : SteamLobby
             {
                 StatusLabel.Set("text", "Status: Hosting, Waiting For Players");
                 HostButton.GetNode("HostLabel").Set("text","Cancel");
+                RhythmleticsGlobal.LobbyHost = RhythmleticsGlobal.CurrentLobby.Owner;
             }
         else 
             {

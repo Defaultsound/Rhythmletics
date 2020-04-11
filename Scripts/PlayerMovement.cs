@@ -1,7 +1,7 @@
 using Godot;
 using System;
 using Steamworks;
-
+using FlatBuffers;
 public class PlayerMovement : KinematicBody
 {
 
@@ -11,12 +11,13 @@ public class PlayerMovement : KinematicBody
     
     public String ControllerId;
 
+    bool sendPacketReady = true;
 
     public override void _Ready()
     {
         RhythmleticsGlobal = GetNode("/root/RhythmleticsGlobal") as Global;
         var PlayerCamera = GetNode("Camera") as Camera;
-
+        
         if (ControllerId == RhythmleticsGlobal.ClientSteamId.ToString()) 
         {
             PlayerCamera.MakeCurrent();
@@ -53,15 +54,34 @@ public class PlayerMovement : KinematicBody
         }
         else 
         {
-            MovePlayer();
+            transferPlayerMovement();
         }
+
 
     }
 
-    
     public void MovePlayer() 
     {
         CurrentVelocity = MoveAndSlide(CurrentVelocity, Vector3.Up,true);
+    }
+
+    private void transferPlayerMovement() 
+    {
+        if (sendPacketReady) 
+        {
+            FlatBufferBuilder builder = new FlatBufferBuilder(8);
+            NetworkPacket.PlayerInformation.StartPlayerInformation(builder);
+
+            NetworkPacket.PlayerInformation.AddID(builder, builder.CreateString(ControllerId));
+            NetworkPacket.PlayerInformation.AddPosition(builder,NetworkPacket.Vec3.CreateVec3(builder, Transform.origin.x,Transform.origin.y,Transform.origin.z));
+            var StopBuilding = NetworkPacket.PlayerInformation.EndPlayerInformation(builder);
+            builder.Finish(StopBuilding.Value);
+
+            byte[] packet = builder.SizedByteArray();
+
+            SteamNetworking.SendP2PPacket(RhythmleticsGlobal.LobbyHost,packet,(uint)packet.Length, EP2PSend.k_EP2PSendUnreliable);
+
+        } 
     }
 }
 

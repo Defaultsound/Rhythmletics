@@ -27,9 +27,10 @@ public class GameMode : SteamLobby
         var NewPlayer = ANewPlayer.Instance();
         NewPlayer.Name = Friend.Name;
         NewPlayer.GetNode("Viewport/Control/PlayerName").Set("text",Friend.Name);
+        NewPlayer.Set("ControllerId", Friend.Id.ToString());
         AddChild(NewPlayer);
         NewPlayer.Set("translation",new Vector3(0,6,0));
-        NewPlayer.Set("ControllerId", Friend.Id.ToString());
+        
     }
 
 }

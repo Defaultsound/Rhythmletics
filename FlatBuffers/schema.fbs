@@ -1,9 +1,14 @@
 namespace NetworkPacket;
 
-struct Vec3 
+struct Vec3
 {
     x:float;
     y:float;
     z:float;
 }
 
+table PlayerInformation
+{
+    ID:string;
+    Position:Vec3;
+}
