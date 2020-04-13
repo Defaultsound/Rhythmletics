@@ -22,9 +22,9 @@ public class GameMode : SteamLobby
     {
         while (Steamworks.SteamNetworking.IsP2PPacketAvailable(0)) 
         {
-            var IncomingData = Steamworks.SteamNetworking.ReadP2PPacket(0);
-            GD.Print(IncomingData);
-            ByteBuffer Buffer = new ByteBuffer(0);
+            //var IncomingData = Steamworks.SteamNetworking.ReadP2PPacket(0);
+            //GD.Print(IncomingData);
+            //ByteBuffer Buffer = new ByteBuffer(0);
         }
     }
 

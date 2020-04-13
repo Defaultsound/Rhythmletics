@@ -74,6 +74,7 @@ public class PlayerMovement : KinematicBody
 
             NetworkPacket.PlayerInformation.AddID(builder, builder.CreateString(ControllerId));
             NetworkPacket.PlayerInformation.AddPosition(builder,NetworkPacket.Vec3.CreateVec3(builder, Transform.origin.x,Transform.origin.y,Transform.origin.z));
+            
             var StopBuilding = NetworkPacket.PlayerInformation.EndPlayerInformation(builder);
             builder.Finish(StopBuilding.Value);
 
