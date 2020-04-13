@@ -79,7 +79,7 @@ public class PlayerMovement : KinematicBody
 
             byte[] packet = builder.SizedByteArray();
 
-            SteamNetworking.SendP2PPacket(RhythmleticsGlobal.LobbyHost,packet,(uint)packet.Length, EP2PSend.k_EP2PSendUnreliable);
+            SteamNetworking.SendP2PPacket(RhythmleticsGlobal.LobbyHost,packet,(int)packet.Length, 0, Steamworks.P2PSend.Unreliable);
 
         } 
     }

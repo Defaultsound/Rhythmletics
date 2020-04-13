@@ -8,7 +8,7 @@ public class Global : Node
 
     public Steamworks.SteamId ClientSteamId;
 
-    public Steamworks.Friend LobbyHost;
+    public Steamworks.SteamId LobbyHost;
     public override void _Ready()
     {
         
