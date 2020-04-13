@@ -22,9 +22,10 @@ public class GameMode : SteamLobby
     {
         while (Steamworks.SteamNetworking.IsP2PPacketAvailable(0)) 
         {
-            //var IncomingData = Steamworks.SteamNetworking.ReadP2PPacket(0);
-            //GD.Print(IncomingData);
-            //ByteBuffer Buffer = new ByteBuffer(0);
+            var IncomingData = Steamworks.SteamNetworking.ReadP2PPacket(0);
+            ByteBuffer Buffer = new ByteBuffer(IncomingData.Value.Data);
+            var PacketDebug = NetworkPacket.PlayerInformation.GetRootAsPlayerInformation(Buffer);
+            //GD.Print(PacketDebug.Position.Value.X);
         }
     }
 
@@ -36,6 +37,7 @@ public class GameMode : SteamLobby
 
     public void OnP2PSessionRequest(Steamworks.SteamId Friend)
     {
+        GD.Print("Request from: " + Friend);
         foreach (var member in  RhythmleticsGlobal.CurrentLobby.Members) 
         {
             if(member.Id == Friend) 

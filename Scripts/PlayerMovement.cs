@@ -70,9 +70,11 @@ public class PlayerMovement : KinematicBody
         if (sendPacketReady) 
         {
             FlatBufferBuilder builder = new FlatBufferBuilder(8);
+            var name = builder.CreateString(ControllerId);
+
             NetworkPacket.PlayerInformation.StartPlayerInformation(builder);
 
-            NetworkPacket.PlayerInformation.AddID(builder, builder.CreateString(ControllerId));
+            NetworkPacket.PlayerInformation.AddID(builder,name);
             NetworkPacket.PlayerInformation.AddPosition(builder,NetworkPacket.Vec3.CreateVec3(builder, Transform.origin.x,Transform.origin.y,Transform.origin.z));
             
             var StopBuilding = NetworkPacket.PlayerInformation.EndPlayerInformation(builder);
@@ -80,8 +82,8 @@ public class PlayerMovement : KinematicBody
 
             byte[] packet = builder.SizedByteArray();
 
-            SteamNetworking.SendP2PPacket(RhythmleticsGlobal.LobbyHost,packet,(int)packet.Length, 0, Steamworks.P2PSend.Unreliable);
-
+            //SteamNetworking.SendP2PPacket(RhythmleticsGlobal.LobbyHost,packet,(int)packet.Length, 0, Steamworks.P2PSend.Unreliable);
+            SteamNetworking.SendP2PPacket( RhythmleticsGlobal.LobbyHost, new byte[] { 1, 2, 3 } );
         } 
     }
 }
