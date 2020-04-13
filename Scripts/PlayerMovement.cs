@@ -67,7 +67,7 @@ public class PlayerMovement : KinematicBody
 
     private void transferPlayerMovement() 
     {
-        if (sendPacketReady) 
+        if (sendPacketReady && (RhythmleticsGlobal.LobbyHost != RhythmleticsGlobal.ClientSteamId)) 
         {
             FlatBufferBuilder builder = new FlatBufferBuilder(8);
             var name = builder.CreateString(ControllerId);

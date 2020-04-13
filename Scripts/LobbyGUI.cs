@@ -82,6 +82,7 @@ public class LobbyGUI : SteamLobby
             if (Message.Equals("EV_BEGIN")) 
             {
                 GetTree().ChangeScene("Scenes/World.tscn");
+                RhythmleticsGlobal.LobbyHost = Lobby.Owner.Id;
             }
         }
     }

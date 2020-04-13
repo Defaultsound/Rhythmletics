@@ -23,14 +23,16 @@ public class GameMode : SteamLobby
         while (Steamworks.SteamNetworking.IsP2PPacketAvailable(0)) 
         {
             var IncomingData = Steamworks.SteamNetworking.ReadP2PPacket(0);
-            ByteBuffer Buffer = new ByteBuffer(IncomingData.Value.Data);
-            var PacketDebug = NetworkPacket.PlayerInformation.GetRootAsPlayerInformation(Buffer);
-            //GD.Print(PacketDebug.Position.Value.X);
+            //ByteBuffer Buffer = new ByteBuffer(IncomingData.Value.Data);
+            //var PacketDebug = NetworkPacket.PlayerInformation.GetRootAsPlayerInformation(Buffer);
+            GD.Print(IncomingData.Value.Data[1]);
         }
     }
 
     public override void OnLobbyMemberJoined(Steamworks.Data.Lobby Lobby, Friend Friend) 
     {
+        GD.Print(Friend + " Joined");
+        Steamworks.SteamNetworking.CloseP2PSessionWithUser(Friend.Id);
         AddNewPlayer(Friend);
         RhythmleticsGlobal.CurrentLobby.SendChatString("EV_BEGIN");
     }
@@ -38,14 +40,14 @@ public class GameMode : SteamLobby
     public void OnP2PSessionRequest(Steamworks.SteamId Friend)
     {
         GD.Print("Request from: " + Friend);
-        foreach (var member in  RhythmleticsGlobal.CurrentLobby.Members) 
-        {
-            if(member.Id == Friend) 
-            {
-                Steamworks.SteamNetworking.AcceptP2PSessionWithUser(Friend);
-                GD.Print("You have accepted incoming connection from " + member.Name);
-            }
-        }
+        // foreach (var member in  RhythmleticsGlobal.CurrentLobby.Members) 
+        // {
+        //     if(member.Id == Friend) 
+        //     {
+        //         Steamworks.SteamNetworking.AcceptP2PSessionWithUser(Friend);
+        //         GD.Print("You have accepted incoming connection from " + member.Name);
+        //     }
+        // }
     }
 
     public void OnP2PConnectionFailed(Steamworks.SteamId Friend, Steamworks.P2PSessionError Error)
