@@ -9,7 +9,10 @@ public class PlayerMovement : KinematicBody
     Global RhythmleticsGlobal;
     Vector3 CurrentVelocity;
     Vector3 Gravity = Vector3.Down * 12;
-    
+    float Speed = 200;
+    float RotationSpeed = 120;
+    [Export]
+    float JumpSpeed = 400;
     public String ControllerId;
 
     bool sendPacketReady = true;
@@ -37,17 +40,26 @@ public class PlayerMovement : KinematicBody
         
             if (Input.IsActionPressed("move_forward"))
             {  
-                CurrentVelocity += Transform.basis.x * 200 * delta;
+                CurrentVelocity += Transform.basis.x * Speed * delta;
+            }
+
+            if (Input.IsActionPressed("move_backward"))
+            {  
+                CurrentVelocity -= Transform.basis.x * Speed * delta;
             }
 
             if (Input.IsActionPressed("turn_left"))
             {  
-                RotationDegrees = new Vector3(0,RotationDegrees.y + 120 * delta,0);
+                RotationDegrees = new Vector3(0,RotationDegrees.y + RotationSpeed * delta,0);
             }
 
             if (Input.IsActionPressed("turn_right"))
             {  
-                RotationDegrees = new Vector3(0,RotationDegrees.y - 120 * delta,0);
+                RotationDegrees = new Vector3(0,RotationDegrees.y - RotationSpeed * delta,0);
+            }
+            if (Input.IsActionPressed("jump") && IsOnFloor())
+            {
+                CurrentVelocity += Transform.basis.y * JumpSpeed * delta;
             }
 
             MovePlayer();

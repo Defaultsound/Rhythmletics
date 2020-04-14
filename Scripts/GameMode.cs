@@ -100,6 +100,10 @@ public class GameMode : SteamLobby
         var NewPlayer = ANewPlayer.Instance();
         NewPlayer.Name = Friend.Id.ToString();
         NewPlayer.GetNode("Viewport/Control/PlayerName").Set("text",Friend.Name);
+        SpatialMaterial PlayerMaterial = (SpatialMaterial)NewPlayer.GetNode("PlayerMesh").Get("material/0");
+        RandomNumberGenerator rnd1 = new RandomNumberGenerator();
+        rnd1.Randomize();
+        PlayerMaterial.AlbedoColor = new Color(rnd1.RandfRange(0,1),rnd1.RandfRange(0,1),rnd1.RandfRange(0,1),1);
         NewPlayer.Set("ControllerId", Friend.Id.ToString());
         AddChild(NewPlayer);
         NewPlayer.Set("translation",new Vector3(0,6,0));
