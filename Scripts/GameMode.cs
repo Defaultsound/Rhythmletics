@@ -30,8 +30,9 @@ public class GameMode : SteamLobby
 
             foreach (Node player in GetTree().GetNodesInGroup("Players")) 
             {
-                if(player.Name == IncomingPacket.ID && IncomingPacket.ID != RhythmleticsGlobal.ClientSteamId.ToString()) 
+                if(player.Name == IncomingPacket.ID) 
                 {
+                    GD.Print(player.Name);
                     player.Set("translation",new Vector3(IncomingPacket.Position.Value.X,IncomingPacket.Position.Value.Y,IncomingPacket.Position.Value.Z));
                     player.Set("rotation_degrees", new Vector3(IncomingPacket.Rotation.Value.X,IncomingPacket.Rotation.Value.Y,IncomingPacket.Rotation.Value.Z));
                 }

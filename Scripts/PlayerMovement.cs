@@ -65,30 +65,30 @@ public class PlayerMovement : KinematicBody
 
     private void transferPlayerMovement() 
     {
-        if (sendPacketReady && (RhythmleticsGlobal.LobbyHost != RhythmleticsGlobal.ClientSteamId)) 
-        {
-            FlatBufferBuilder builder = new FlatBufferBuilder(8);
-            var name = builder.CreateString(ControllerId);
+        // if (sendPacketReady && (RhythmleticsGlobal.LobbyHost != RhythmleticsGlobal.ClientSteamId)) 
+        // {
+        //     FlatBufferBuilder builder = new FlatBufferBuilder(8);
+        //     var name = builder.CreateString(ControllerId);
 
-            NetworkPacket.PlayerInformation.StartPlayerInformation(builder);
+        //     NetworkPacket.PlayerInformation.StartPlayerInformation(builder);
 
-            NetworkPacket.PlayerInformation.AddID(builder,name);
-            NetworkPacket.PlayerInformation.AddPosition(builder,NetworkPacket.Vec3.CreateVec3(builder, Transform.origin.x,Transform.origin.y,Transform.origin.z));
-            NetworkPacket.PlayerInformation.AddRotation(builder,NetworkPacket.Vec3.CreateVec3(builder, RotationDegrees.x,RotationDegrees.y,RotationDegrees.z));
+        //     NetworkPacket.PlayerInformation.AddID(builder,name);
+        //     NetworkPacket.PlayerInformation.AddPosition(builder,NetworkPacket.Vec3.CreateVec3(builder, Transform.origin.x,Transform.origin.y,Transform.origin.z));
+        //     NetworkPacket.PlayerInformation.AddRotation(builder,NetworkPacket.Vec3.CreateVec3(builder, RotationDegrees.x,RotationDegrees.y,RotationDegrees.z));
             
-            var StopBuilding = NetworkPacket.PlayerInformation.EndPlayerInformation(builder);
-            builder.Finish(StopBuilding.Value);
+        //     var StopBuilding = NetworkPacket.PlayerInformation.EndPlayerInformation(builder);
+        //     builder.Finish(StopBuilding.Value);
 
-            byte[] packet = builder.SizedByteArray();
+        //     byte[] packet = builder.SizedByteArray();
 
-            SteamNetworking.SendP2PPacket(RhythmleticsGlobal.LobbyHost,packet,(int)packet.Length, 0, Steamworks.P2PSend.Unreliable);
-        } 
+        //     SteamNetworking.SendP2PPacket(RhythmleticsGlobal.LobbyHost,packet,(int)packet.Length, 0, Steamworks.P2PSend.Unreliable);
+        // } 
 
-        if (sendPacketReady && (RhythmleticsGlobal.LobbyHost == RhythmleticsGlobal.ClientSteamId)) 
+        if (sendPacketReady) 
         {
             FlatBufferBuilder builder = new FlatBufferBuilder(8);
 
-            var OtherPlayers = RhythmleticsGlobal.CurrentLobby.Members;
+            var OtherPlayers = RhythmleticsGlobal.CurrentLobby.Members.Where(m => m.Id != RhythmleticsGlobal.ClientSteamId);
 
             var NodePlayers = new KinematicBody[GetTree().GetNodesInGroup("Players").Count];
             GetTree().GetNodesInGroup("Players").CopyTo(NodePlayers, 0);
