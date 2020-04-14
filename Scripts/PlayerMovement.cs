@@ -99,6 +99,7 @@ public class PlayerMovement : KinematicBody
             
             foreach (var player in MatchedPlayers) 
             {   
+                GD.Print(player.Key.Id, player.Value);
                 FlatBuffers.StringOffset PlayerID = builder.CreateString(player.Key.Id.ToString());
                 NetworkPacket.PlayerInformation.StartPlayerInformation(builder);
                 NetworkPacket.PlayerInformation.AddID(builder,PlayerID);
@@ -107,7 +108,11 @@ public class PlayerMovement : KinematicBody
                 var StopBuilding = NetworkPacket.PlayerInformation.EndPlayerInformation(builder);
                 builder.Finish(StopBuilding.Value);
                 byte[] packet = builder.SizedByteArray();
-                SteamNetworking.SendP2PPacket(player.Key.Id,packet,(int)packet.Length, 0, Steamworks.P2PSend.Unreliable);
+                if(RhythmleticsGlobal.ClientSteamId != player.Key.Id) 
+                {
+                    SteamNetworking.SendP2PPacket(player.Key.Id,packet,(int)packet.Length, 0, Steamworks.P2PSend.Unreliable);
+                }
+                
             }    
         }
     }
