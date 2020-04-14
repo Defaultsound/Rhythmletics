@@ -12,11 +12,11 @@ public class SteamManager : Node
 		try
 		{
 
-			if (Steamworks.SteamClient.RestartAppIfNecessary((AppId)480))
-			{
-				GD.Print("restarting through steam...");
-				GetTree().Quit();
-			}
+			// if (Steamworks.SteamClient.RestartAppIfNecessary((AppId)480))
+			// {
+			// 	GD.Print("restarting through steam...");
+			// 	GetTree().Quit();
+			// }
 
 			Steamworks.SteamClient.Init(480, true);
 
