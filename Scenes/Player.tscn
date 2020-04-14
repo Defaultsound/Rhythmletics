@@ -87,3 +87,7 @@ __meta__ = {
 transform = Transform( 2.18557e-07, -1.91069e-14, 1, -8.74228e-08, -1, 0, 1, -8.74228e-08, -2.18557e-07, 0, 0.490026, 0 )
 mesh = SubResource( 6 )
 material/0 = SubResource( 8 )
+
+[node name="ServerTick" type="Timer" parent="."]
+wait_time = 0.018
+[connection signal="timeout" from="ServerTick" to="." method="_on_ServerTick_timeout"]
