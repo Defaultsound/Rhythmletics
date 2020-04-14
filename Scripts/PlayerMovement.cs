@@ -2,6 +2,7 @@ using Godot;
 using System;
 using Steamworks;
 using FlatBuffers;
+using System.Linq;
 public class PlayerMovement : KinematicBody
 {
 
@@ -61,6 +62,7 @@ public class PlayerMovement : KinematicBody
         CurrentVelocity = MoveAndSlide(CurrentVelocity, Vector3.Up,true);
     }
 
+
     private void transferPlayerMovement() 
     {
         if (sendPacketReady && (RhythmleticsGlobal.LobbyHost != RhythmleticsGlobal.ClientSteamId)) 
@@ -81,6 +83,33 @@ public class PlayerMovement : KinematicBody
 
             SteamNetworking.SendP2PPacket(RhythmleticsGlobal.LobbyHost,packet,(int)packet.Length, 0, Steamworks.P2PSend.Unreliable);
         } 
+
+        if (sendPacketReady && (RhythmleticsGlobal.LobbyHost == RhythmleticsGlobal.ClientSteamId)) 
+        {
+            FlatBufferBuilder builder = new FlatBufferBuilder(8);
+
+            var OtherPlayers = RhythmleticsGlobal.CurrentLobby.Members;
+
+            var NodePlayers = new KinematicBody[GetTree().GetNodesInGroup("Players").Count];
+            GetTree().GetNodesInGroup("Players").CopyTo(NodePlayers, 0);
+            var MatchedPlayers = OtherPlayers
+                .Where(p => NodePlayers.Any(n => p.Id.ToString() == n.Name))
+                .ToDictionary(p => p, p => NodePlayers.First(n => p.Id.ToString() == n.Name));
+
+            
+            foreach (var player in MatchedPlayers) 
+            {   
+                FlatBuffers.StringOffset PlayerID = builder.CreateString(player.Key.Id.ToString());
+                NetworkPacket.PlayerInformation.StartPlayerInformation(builder);
+                NetworkPacket.PlayerInformation.AddID(builder,PlayerID);
+                NetworkPacket.PlayerInformation.AddPosition(builder,NetworkPacket.Vec3.CreateVec3(builder, player.Value.Translation.x ,player.Value.Translation.y,player.Value.Translation.z));
+                NetworkPacket.PlayerInformation.AddRotation(builder,NetworkPacket.Vec3.CreateVec3(builder, player.Value.RotationDegrees.x,player.Value.RotationDegrees.y,player.Value.RotationDegrees.z));
+                var StopBuilding = NetworkPacket.PlayerInformation.EndPlayerInformation(builder);
+                builder.Finish(StopBuilding.Value);
+                byte[] packet = builder.SizedByteArray();
+                SteamNetworking.SendP2PPacket(player.Key.Id,packet,(int)packet.Length, 0, Steamworks.P2PSend.Unreliable);
+            }    
+        }
     }
 }
 

@@ -30,7 +30,7 @@ public class GameMode : SteamLobby
 
             foreach (Node player in GetTree().GetNodesInGroup("Players")) 
             {
-                if(player.Name == IncomingPacket.ID) 
+                if(player.Name == IncomingPacket.ID && IncomingPacket.ID != RhythmleticsGlobal.ClientSteamId.ToString()) 
                 {
                     player.Set("translation",new Vector3(IncomingPacket.Position.Value.X,IncomingPacket.Position.Value.Y,IncomingPacket.Position.Value.Z));
                     player.Set("rotation_degrees", new Vector3(IncomingPacket.Rotation.Value.X,IncomingPacket.Rotation.Value.Y,IncomingPacket.Rotation.Value.Z));
@@ -45,6 +45,19 @@ public class GameMode : SteamLobby
         Steamworks.SteamNetworking.CloseP2PSessionWithUser(Friend.Id);
         AddNewPlayer(Friend);
         RhythmleticsGlobal.CurrentLobby.SendChatString("EV_BEGIN");
+    }
+
+    public override void OnLobbyMemberLeave(Steamworks.Data.Lobby Lobby, Friend Friend)
+    {
+        Steamworks.SteamNetworking.CloseP2PSessionWithUser(Friend.Id);
+        GD.Print("Player Left " + Friend.Id);
+        RemovePlayer(Friend);
+
+    }
+
+    public void PacketMulticast()
+    {
+
     }
 
     public void OnP2PSessionRequest(Steamworks.SteamId Friend)
@@ -64,6 +77,17 @@ public class GameMode : SteamLobby
         GD.Print("P2P session failed. Error code: " + Error);
     }
 
+    public void RemovePlayer(Friend Friend)
+    {
+        foreach (Node player in GetTree().GetNodesInGroup("Players")) 
+        {
+            if(Friend.Id.ToString() == player.Name)
+            {
+                GD.Print("Removed: " + player.Name);
+                player.QueueFree();
+            }
+        }
+    }
 
     public void AddNewPlayer(Friend Friend)
     {
