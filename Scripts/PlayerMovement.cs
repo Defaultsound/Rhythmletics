@@ -19,7 +19,6 @@ public class PlayerMovement : KinematicBody
         RhythmleticsGlobal = GetNode("/root/RhythmleticsGlobal") as Global;
         var PlayerCamera = GetNode("Camera") as Camera;
         var ServerTick = GetNode("ServerTick") as Timer;
-        ServerTick.Connect("timeout", this, "_on_timeout");
         if (ControllerId == RhythmleticsGlobal.ClientSteamId.ToString()) 
         {
             PlayerCamera.MakeCurrent();
@@ -95,7 +94,7 @@ public class PlayerMovement : KinematicBody
         }
 
     }
-    private void _on_timeout() => sendPacketReady = true;
+    private void _on_ServerTick_timeout() => sendPacketReady = true;
 }
 
 
