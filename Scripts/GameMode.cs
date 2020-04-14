@@ -28,15 +28,15 @@ public class GameMode : SteamLobby
             ByteBuffer Buffer = new ByteBuffer(IncomingData.Value.Data);
             var IncomingPacket = NetworkPacket.PlayerInformation.GetRootAsPlayerInformation(Buffer);
 
-            foreach (Node player in GetTree().GetNodesInGroup("Players")) 
+            foreach (KinematicBody player in GetTree().GetNodesInGroup("Players")) 
             {
                 if(player.Name == IncomingPacket.ID)
                 {
                     if(IncomingPacket.ID != RhythmleticsGlobal.ClientSteamId.AccountId.ToString()) 
                     {
                         GD.Print(player.Name);
-                        player.Set("translation",new Vector3(IncomingPacket.Position.Value.X,IncomingPacket.Position.Value.Y,IncomingPacket.Position.Value.Z));
-                        player.Set("rotation_degrees", new Vector3(IncomingPacket.Rotation.Value.X,IncomingPacket.Rotation.Value.Y,IncomingPacket.Rotation.Value.Z));
+                        player.Translation = new Vector3(IncomingPacket.Position.Value.X,IncomingPacket.Position.Value.Y,IncomingPacket.Position.Value.Z);
+                        player.RotationDegrees = new Vector3(IncomingPacket.Rotation.Value.X,IncomingPacket.Rotation.Value.Y,IncomingPacket.Rotation.Value.Z);
                     }
                     
                 }
