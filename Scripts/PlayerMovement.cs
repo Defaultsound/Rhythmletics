@@ -88,7 +88,7 @@ public class PlayerMovement : KinematicBody
         {
             FlatBufferBuilder builder = new FlatBufferBuilder(8);
 
-            var OtherPlayers = RhythmleticsGlobal.CurrentLobby.Members.Where(m => m.Id != RhythmleticsGlobal.ClientSteamId);
+            var OtherPlayers = RhythmleticsGlobal.CurrentLobby.Members;
 
             var NodePlayers = new KinematicBody[GetTree().GetNodesInGroup("Players").Count];
             GetTree().GetNodesInGroup("Players").CopyTo(NodePlayers, 0);

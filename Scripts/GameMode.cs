@@ -32,7 +32,7 @@ public class GameMode : SteamLobby
             {
                 if(player.Name != RhythmleticsGlobal.ClientSteamId.ToString()) 
                 {
-                    GD.Print("This is not the client");
+                    GD.Print("Packet From: " + IncomingPacket.ID);
                     if(player.Name == IncomingPacket.ID)
                     {
                         GD.Print(player.Name);
