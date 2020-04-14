@@ -47,10 +47,12 @@ public struct PlayerInformation : IFlatbufferObject
 #endif
   public byte[] GetIDArray() { return __p.__vector_as_array<byte>(4); }
   public NetworkPacket.Vec3? Position { get { int o = __p.__offset(6); return o != 0 ? (NetworkPacket.Vec3?)(new NetworkPacket.Vec3()).__assign(o + __p.bb_pos, __p.bb) : null; } }
+  public NetworkPacket.Vec3? Rotation { get { int o = __p.__offset(8); return o != 0 ? (NetworkPacket.Vec3?)(new NetworkPacket.Vec3()).__assign(o + __p.bb_pos, __p.bb) : null; } }
 
-  public static void StartPlayerInformation(FlatBufferBuilder builder) { builder.StartTable(2); }
+  public static void StartPlayerInformation(FlatBufferBuilder builder) { builder.StartTable(3); }
   public static void AddID(FlatBufferBuilder builder, StringOffset IDOffset) { builder.AddOffset(0, IDOffset.Value, 0); }
   public static void AddPosition(FlatBufferBuilder builder, Offset<NetworkPacket.Vec3> PositionOffset) { builder.AddStruct(1, PositionOffset.Value, 0); }
+  public static void AddRotation(FlatBufferBuilder builder, Offset<NetworkPacket.Vec3> RotationOffset) { builder.AddStruct(2, RotationOffset.Value, 0); }
   public static Offset<NetworkPacket.PlayerInformation> EndPlayerInformation(FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<NetworkPacket.PlayerInformation>(o);

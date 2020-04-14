@@ -2,6 +2,7 @@ using Godot;
 using System;
 using Steamworks;
 using FlatBuffers;
+using System.Linq;
 public class GameMode : SteamLobby
 {
 
@@ -11,6 +12,7 @@ public class GameMode : SteamLobby
 
         Steamworks.SteamNetworking.OnP2PSessionRequest += OnP2PSessionRequest;
         Steamworks.SteamNetworking.OnP2PConnectionFailed += OnP2PConnectionFailed;
+
 
         foreach (var member in  RhythmleticsGlobal.CurrentLobby.Members) 
         {
@@ -24,13 +26,14 @@ public class GameMode : SteamLobby
         {
             var IncomingData = Steamworks.SteamNetworking.ReadP2PPacket(0);
             ByteBuffer Buffer = new ByteBuffer(IncomingData.Value.Data);
-            var PacketDebug = NetworkPacket.PlayerInformation.GetRootAsPlayerInformation(Buffer);
-            
+            var IncomingPacket = NetworkPacket.PlayerInformation.GetRootAsPlayerInformation(Buffer);
+
             foreach (Node player in GetTree().GetNodesInGroup("Players")) 
             {
-                if(player.Name == PacketDebug.ID) 
+                if(player.Name == IncomingPacket.ID) 
                 {
-                    player.Set("translation",new Vector3(PacketDebug.Position.Value.X,PacketDebug.Position.Value.Y,PacketDebug.Position.Value.Z));
+                    player.Set("translation",new Vector3(IncomingPacket.Position.Value.X,IncomingPacket.Position.Value.Y,IncomingPacket.Position.Value.Z));
+                    player.Set("rotation_degrees", new Vector3(IncomingPacket.Rotation.Value.X,IncomingPacket.Rotation.Value.Y,IncomingPacket.Rotation.Value.Z));
                 }
             }
         }
@@ -47,14 +50,13 @@ public class GameMode : SteamLobby
     public void OnP2PSessionRequest(Steamworks.SteamId Friend)
     {
         GD.Print("Request from: " + Friend);
-        foreach (var member in  RhythmleticsGlobal.CurrentLobby.Members) 
+        var ConnectingFriend = (Friend?)RhythmleticsGlobal.CurrentLobby.Members.FirstOrDefault(m => m.Id == Friend);
+        if (ConnectingFriend != null)
         {
-            if(member.Id == Friend) 
-            {
-                Steamworks.SteamNetworking.AcceptP2PSessionWithUser(Friend);
-                GD.Print("You have accepted incoming connection from " + member.Name);
-            }
+            Steamworks.SteamNetworking.AcceptP2PSessionWithUser(Friend);
+            GD.Print("You have accepted incoming connection from " + ConnectingFriend.Value.Name); 
         }
+        
     }
 
     public void OnP2PConnectionFailed(Steamworks.SteamId Friend, Steamworks.P2PSessionError Error)
