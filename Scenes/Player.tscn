@@ -90,4 +90,5 @@ material/0 = SubResource( 8 )
 
 [node name="ServerTick" type="Timer" parent="."]
 wait_time = 0.018
+autostart = true
 [connection signal="timeout" from="ServerTick" to="." method="_on_ServerTick_timeout"]
