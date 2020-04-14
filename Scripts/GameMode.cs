@@ -30,19 +30,15 @@ public class GameMode : SteamLobby
 
             foreach (KinematicBody player in GetTree().GetNodesInGroup("Players")) 
             {
-                if(player.Name == RhythmleticsGlobal.ClientSteamId.ToString()) 
+                if(player.Name != RhythmleticsGlobal.ClientSteamId.ToString()) 
                 {
-                    GD.Print("This is the client");
-                }
-                else
-                {
+                    GD.Print("This is not the client");
                     if(player.Name == IncomingPacket.ID)
                     {
                         GD.Print(player.Name);
                         player.Translation = new Vector3(IncomingPacket.Position.Value.X,IncomingPacket.Position.Value.Y,IncomingPacket.Position.Value.Z);
                         player.RotationDegrees = new Vector3(IncomingPacket.Rotation.Value.X,IncomingPacket.Rotation.Value.Y,IncomingPacket.Rotation.Value.Z);
                     }
-
                 }
 
             }
