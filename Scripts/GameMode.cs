@@ -30,7 +30,7 @@ public class GameMode : SteamLobby
 
             foreach (Node player in GetTree().GetNodesInGroup("Players")) 
             {
-                if(player.Name == IncomingPacket.ID) 
+                if(player.Name == IncomingPacket.ID && (IncomingPacket.ID != RhythmleticsGlobal.ClientSteamId.ToString()))
                 {
                     GD.Print(player.Name);
                     player.Set("translation",new Vector3(IncomingPacket.Position.Value.X,IncomingPacket.Position.Value.Y,IncomingPacket.Position.Value.Z));
