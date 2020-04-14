@@ -50,13 +50,9 @@ public class PlayerMovement : KinematicBody
             }
 
             MovePlayer();
-
-        }
-        else 
-        {
             transferPlayerMovement();
-        }
 
+        }
 
     }
 
@@ -82,8 +78,7 @@ public class PlayerMovement : KinematicBody
 
             byte[] packet = builder.SizedByteArray();
 
-            //SteamNetworking.SendP2PPacket(RhythmleticsGlobal.LobbyHost,packet,(int)packet.Length, 0, Steamworks.P2PSend.Unreliable);
-            SteamNetworking.SendP2PPacket( RhythmleticsGlobal.LobbyHost, new byte[] { 1, 2, 3 } );
+            SteamNetworking.SendP2PPacket(RhythmleticsGlobal.LobbyHost,packet,(int)packet.Length, 0, Steamworks.P2PSend.Unreliable);
         } 
     }
 }

@@ -11,7 +11,7 @@ public class GameMode : SteamLobby
 
         Steamworks.SteamNetworking.OnP2PSessionRequest += OnP2PSessionRequest;
         Steamworks.SteamNetworking.OnP2PConnectionFailed += OnP2PConnectionFailed;
-        
+
         foreach (var member in  RhythmleticsGlobal.CurrentLobby.Members) 
         {
             AddNewPlayer(member);
@@ -23,9 +23,16 @@ public class GameMode : SteamLobby
         while (Steamworks.SteamNetworking.IsP2PPacketAvailable(0)) 
         {
             var IncomingData = Steamworks.SteamNetworking.ReadP2PPacket(0);
-            //ByteBuffer Buffer = new ByteBuffer(IncomingData.Value.Data);
-            //var PacketDebug = NetworkPacket.PlayerInformation.GetRootAsPlayerInformation(Buffer);
-            GD.Print(IncomingData.Value.Data[1]);
+            ByteBuffer Buffer = new ByteBuffer(IncomingData.Value.Data);
+            var PacketDebug = NetworkPacket.PlayerInformation.GetRootAsPlayerInformation(Buffer);
+            
+            foreach (Node player in GetTree().GetNodesInGroup("Players")) 
+            {
+                if(player.Name == PacketDebug.ID) 
+                {
+                    player.Set("translation",new Vector3(PacketDebug.Position.Value.X,PacketDebug.Position.Value.Y,PacketDebug.Position.Value.Z));
+                }
+            }
         }
     }
 
@@ -40,14 +47,14 @@ public class GameMode : SteamLobby
     public void OnP2PSessionRequest(Steamworks.SteamId Friend)
     {
         GD.Print("Request from: " + Friend);
-        // foreach (var member in  RhythmleticsGlobal.CurrentLobby.Members) 
-        // {
-        //     if(member.Id == Friend) 
-        //     {
-        //         Steamworks.SteamNetworking.AcceptP2PSessionWithUser(Friend);
-        //         GD.Print("You have accepted incoming connection from " + member.Name);
-        //     }
-        // }
+        foreach (var member in  RhythmleticsGlobal.CurrentLobby.Members) 
+        {
+            if(member.Id == Friend) 
+            {
+                Steamworks.SteamNetworking.AcceptP2PSessionWithUser(Friend);
+                GD.Print("You have accepted incoming connection from " + member.Name);
+            }
+        }
     }
 
     public void OnP2PConnectionFailed(Steamworks.SteamId Friend, Steamworks.P2PSessionError Error)
@@ -60,7 +67,7 @@ public class GameMode : SteamLobby
     {
         var ANewPlayer = ResourceLoader.Load("res://Scenes/Player.tscn") as PackedScene;
         var NewPlayer = ANewPlayer.Instance();
-        NewPlayer.Name = Friend.Name;
+        NewPlayer.Name = Friend.Id.ToString();
         NewPlayer.GetNode("Viewport/Control/PlayerName").Set("text",Friend.Name);
         NewPlayer.Set("ControllerId", Friend.Id.ToString());
         AddChild(NewPlayer);

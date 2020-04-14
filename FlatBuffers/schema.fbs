@@ -11,4 +11,5 @@ table PlayerInformation
 {
     ID:string;
     Position:Vec3;
+    Rotation:Vec3;
 }
