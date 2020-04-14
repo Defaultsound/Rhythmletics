@@ -18,14 +18,15 @@ public class PlayerMovement : KinematicBody
     {
         RhythmleticsGlobal = GetNode("/root/RhythmleticsGlobal") as Global;
         var PlayerCamera = GetNode("Camera") as Camera;
-        
+        var ServerTick = GetNode("ServerTick") as Timer;
+        ServerTick.Connect("timeout", this, "_on_timeout");
         if (ControllerId == RhythmleticsGlobal.ClientSteamId.ToString()) 
         {
             PlayerCamera.MakeCurrent();
         }
     }
 
-    public override void _Process(float delta)
+    public override void _PhysicsProcess(float delta)
     {
         CurrentVelocity.x = 0;
         CurrentVelocity.z = 0;
@@ -37,17 +38,17 @@ public class PlayerMovement : KinematicBody
         
             if (Input.IsActionPressed("move_forward"))
             {  
-                CurrentVelocity += Transform.basis.x * 3;
+                CurrentVelocity += Transform.basis.x * 200 * delta;
             }
 
             if (Input.IsActionPressed("turn_left"))
             {  
-                RotationDegrees = new Vector3(0,RotationDegrees.y + 5,0);
+                RotationDegrees = new Vector3(0,RotationDegrees.y + 120 * delta,0);
             }
 
             if (Input.IsActionPressed("turn_right"))
             {  
-                RotationDegrees = new Vector3(0,RotationDegrees.y - 5,0);
+                RotationDegrees = new Vector3(0,RotationDegrees.y - 120 * delta,0);
             }
 
             MovePlayer();
@@ -65,25 +66,6 @@ public class PlayerMovement : KinematicBody
 
     private void transferPlayerMovement() 
     {
-        // if (sendPacketReady && (RhythmleticsGlobal.LobbyHost != RhythmleticsGlobal.ClientSteamId)) 
-        // {
-        //     FlatBufferBuilder builder = new FlatBufferBuilder(8);
-        //     var name = builder.CreateString(ControllerId);
-
-        //     NetworkPacket.PlayerInformation.StartPlayerInformation(builder);
-
-        //     NetworkPacket.PlayerInformation.AddID(builder,name);
-        //     NetworkPacket.PlayerInformation.AddPosition(builder,NetworkPacket.Vec3.CreateVec3(builder, Transform.origin.x,Transform.origin.y,Transform.origin.z));
-        //     NetworkPacket.PlayerInformation.AddRotation(builder,NetworkPacket.Vec3.CreateVec3(builder, RotationDegrees.x,RotationDegrees.y,RotationDegrees.z));
-            
-        //     var StopBuilding = NetworkPacket.PlayerInformation.EndPlayerInformation(builder);
-        //     builder.Finish(StopBuilding.Value);
-
-        //     byte[] packet = builder.SizedByteArray();
-
-        //     SteamNetworking.SendP2PPacket(RhythmleticsGlobal.LobbyHost,packet,(int)packet.Length, 0, Steamworks.P2PSend.Unreliable);
-        // } 
-
         if (sendPacketReady) 
         {
             FlatBufferBuilder builder = new FlatBufferBuilder(8);
@@ -107,13 +89,13 @@ public class PlayerMovement : KinematicBody
 
             foreach (var player in MatchedPlayers) 
             {   
-                
-                //NetworkPacket.PlayerInformation.AddPosition(builder,NetworkPacket.Vec3.CreateVec3(builder, player.Value.Translation.x ,player.Value.Translation.y,player.Value.Translation.z));
-                //NetworkPacket.PlayerInformation.AddRotation(builder,NetworkPacket.Vec3.CreateVec3(builder, player.Value.RotationDegrees.x,player.Value.RotationDegrees.y,player.Value.RotationDegrees.z));
                 SteamNetworking.SendP2PPacket(player.Key.Id,packet,(int)packet.Length, 0, Steamworks.P2PSend.Unreliable);
-            }    
+            }
+            sendPacketReady = false;    
         }
+
     }
+    private void _on_timeout() => sendPacketReady = true;
 }
 
 

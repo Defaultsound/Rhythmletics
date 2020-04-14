@@ -24,7 +24,7 @@ public class LobbyGUI : SteamLobby
         var HostLabelText = HostButton.GetNode("HostLabel").Get("text") as String;
         if (HostLabelText == "Host") 
         {
-            var lobby = Steamworks.SteamMatchmaking.CreateLobbyAsync(4);
+            var lobby = Steamworks.SteamMatchmaking.CreateLobbyAsync(8);
             ContinueButton.Visible = true;
         }
         else 

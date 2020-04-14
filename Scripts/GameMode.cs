@@ -32,10 +32,9 @@ public class GameMode : SteamLobby
             {
                 if(player.Name != RhythmleticsGlobal.ClientSteamId.ToString()) 
                 {
-                    GD.Print("Packet From: " + IncomingPacket.ID);
+    
                     if(player.Name == IncomingPacket.ID)
                     {
-                        GD.Print(player.Name);
                         player.Translation = new Vector3(IncomingPacket.Position.Value.X,IncomingPacket.Position.Value.Y,IncomingPacket.Position.Value.Z);
                         player.RotationDegrees = new Vector3(IncomingPacket.Rotation.Value.X,IncomingPacket.Rotation.Value.Y,IncomingPacket.Rotation.Value.Z);
                     }
